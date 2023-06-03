@@ -20,7 +20,7 @@ export default {
   },
 
   generate: {
-    dir: 'docs'
+    dir: 'docs',
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
