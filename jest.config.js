@@ -20,3 +20,14 @@ module.exports = {
   ],
   testEnvironment: 'jsdom'
 }
+// nuxt.config.js
+
+export default {
+  // ...
+
+  css: [
+    '@/assets/styles/global.scss',
+  ],
+
+  // ...
+}

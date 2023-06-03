@@ -1,16 +1,18 @@
 <template>
   <div>
-    <div class="input-container">
-      <div class="input-wrapper">
-        <label for="input">入力フォーム</label>
-        <input id="input" v-model="inputText" type="text" class="custom-input" />
-      </div>
-      <button @click="processInput" class="neumorphism-button">（迫真）</button>
-    </div>
+    <div class="page-container">
+     <div class="input-container">
+       <div class="input-wrapper">
+         <label for="input">入力フォーム</label>
+         <input id="input" v-model="inputText" type="text" class="custom-input" />
+       </div>
+       <button @click="processInput" class="neumorphism-button">（迫真）</button>
+     </div>
     <div>
       <label for="output">出力フォーム</label>
       <textarea id="output" rows="4" cols="50" v-model="outputText" readonly></textarea>
     </div>
+  </div>
   </div>
 </template>
 <style scoped>
@@ -19,6 +21,9 @@
   margin-right: 10px;
 }
 
+.page-container {
+  background-color: white;
+}
 
 .input-container {
   background-color: white;
