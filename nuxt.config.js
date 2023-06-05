@@ -69,3 +69,10 @@ export default {
 
   devtools: true
 };
+
+module.exports = {
+  // ...
+  css: [
+    "/Users/Macksite/nuxttemp/assets/styles/global.scss"
+  ],
+}

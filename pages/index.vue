@@ -1,6 +1,6 @@
 <template>
-  <div class="page-container">
-    <div >
+  <div class="page">
+    <div>
      <div class="input-container">
        <div class="input-wrapper">
          <label for="input">非迫真テキスト</label>
@@ -8,31 +8,32 @@
        </div>
        <button @click="processInput" class="neumorphism-button">（迫真）</button>
      </div>
-    <div class="output">
+    <div class="form">
       <label for="output">迫　真　テ　キ　ス　ト</label>
-      <textarea id="output" rows="4" cols="50" v-model="outputText" readonly></textarea>
+       <transition name="textarea-transition">
+       <textarea id="output" :rows="calculateRows(outputText)" cals="50" v-model="outputText" readonly>
+       </textarea>
+      </transition>
     </div>
+
   </div>
   </div>
 </template>
+
 <style scoped>
 .input-wrapper {
   flex: 1;
   margin-right: 10px;
-}
 
-.page-container{
-  background-color: rgb(255, 255, 255); 
 }
 
 .input-container {
-  align-self:flex-end;
-  background-color: white;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 6px 6px 10px #ffcaf2, -6px -6px 10px #a5ffc9;
-  padding: 10px;
-    display: flex;
+  align-self:flex;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 6px 6px 10px #ffbaed;
+  padding: 8px 16px; /* ボタンの余白を設定する */
+  border-radius: 20px; /* 角丸を設定する */
+  display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -41,62 +42,71 @@
   width: 100%;
   padding: 5px;
   font-size: 16px;
-  background-color: #e1e6f0;
-  border: none;
+  background-color: rgb(233, 236, 247);
+  border:none;
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 10px 2px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.1s ease;
 }
-.custom-input:active {
-  width: 100%;
-  padding: 5px;
-  font-size: 16px;
-  background-color: #d6dff3;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-}
+
 .custom-input:hover {
   width: 100%;
   padding: 5px;
   font-size: 16px;
   background-color: #dde4ff;
-  border: none;
+  border:aquamarine;
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 10px 2px;
 }
 .neumorphism-button {
   /* ニューモーフィズムボタンのスタイル */
+  margin-top: 24px;
   background-color: #f0f3f8;
-  border: none;
+  border:none;
   border-radius: 10px;
-  box-shadow: 6px 6px 10px #9be6ed, -6px -6px 10px #ffffff;
   padding: 10px 10px;
   font-size: 16px;
   color: hsl(0, 0%, 0%);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.1s ease;
 }
 
 .neumorphism-button:hover {
-  box-shadow: 2px 2px 5px #c7d1e1, -2px -2px 5px #ffffff;
-  transform: translate(2px, 2px);
+background-color: #c7ffd3;
 }
 
 .neumorphism-button:active {
-  box-shadow: inset 1px 1px 2px #c7d1e1, inset -1px -1px 2px #ffffff;
-  transform: translate(1px, 1px);
-}
-.output{
+  background-color: #dcfffd;
+  }
+.form{
   background-color: rgb(255, 255, 255);
   border: none;
   border-radius: 10px;
-  box-shadow: 6px 6px 10px #b1cfff, -6px -6px 10px #ffffff;
+  box-shadow: 6px 6px 10px #9ed5fc;
   padding: 10px;
-  display:-moz-popu;
-  align-items:baseline;
-  margin-bottom: 20px;
+  margin-bottom: 100px;
+}
+
+#output {
+  background-color: #c7ffd3; /* デフォルトのブロック要素として表示する */
+  border-radius: 15px;
+  border:none;
+  display:table; /* デフォルトのブロック要素として表示する */
+  resize: none; /* ユーザーによるリサイズを禁止する */
+  overflow: hidden;
+  font-size: 16px;
+}
+
+.textarea-transition-enter-active,
+.textarea-transition-leave-active {
+  transition: height 0.5s;
+}
+
+.textarea-transition-enter,
+.textarea-transition-leave-to {
+  height: 0;
+  opacity: 0;
 }
 </style>
 
@@ -118,11 +128,29 @@ export default {
         .join(""); // 配列を文字列に結合
 
       this.outputText = processedText;
+      
+    },
+    calculateRows(text) {
+      const lines = text.split("\n"); // 改行文字で分割
+      const maxLength = Math.max(...lines.map(line => line.length)); // 各行の最大文字数を取得
+      const rows = Math.max(lines.length, 4); // 行数を計算（最低でも4行にする）
+
+      // 最大文字数に応じて行の高さを調整
+      if (maxLength <= 50) {
+        return rows;
+      } else {
+        return Math.ceil(rows * (maxLength / 50));
+      }
+    },
+    updateOutputHeight() {
+      const textarea = this.$refs.outputTextarea;
+      if (textarea) {
+        this.outputHeight = `${textarea.scrollHeight}px`;
+      }
     }
   },
+  
+  };
   name: 'IndexPage'
   
-}
-
 </script>
-
