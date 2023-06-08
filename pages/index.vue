@@ -1,22 +1,25 @@
 <template>
   <div class="page">
-    <div>
-     <div class="input-container">
-       <div class="input-wrapper">
-         <label for="input">非迫真テキスト</label>
-         <input id="input" v-model="inputText" type="text" class="custom-input" />
-       </div>
-       <button @click="processInput" class="neumorphism-button">（迫真）</button>
-     </div>
+    <div class="input-container">
+      <div class="input-wrapper">
+        <label for="input">非迫真テキスト</label>
+        <input id="input" v-model="inputText" type="text" class="custom-input" />
+      </div>
+      <button @click="processInput" class="neumorphism-button">（迫真）</button>
+    </div>
     <div class="form">
-      <label for="output">迫　真　テ　キ　ス　ト</label>
-       <transition name="textarea-transition">
-       <textarea id="output" :rows="calculateRows(outputText)" cals="50" v-model="outputText" readonly>
-       </textarea>
+      <label for="output">迫真テキスト</label>
+      <transition name="textarea-transition">
+        <textarea
+          id="output"
+          ref="outputTextarea"
+          :class="{ 'textarea-transition': shouldAnimate }"
+          :style="{ height: outputHeight + 'px' }"
+          v-model="outputText"
+          readonly
+        ></textarea>
       </transition>
     </div>
-
-  </div>
   </div>
 </template>
 
@@ -24,15 +27,14 @@
 .input-wrapper {
   flex: 1;
   margin-right: 10px;
-
 }
 
 .input-container {
-  align-self:flex;
+  align-self: flex;
   background-color: rgb(255, 255, 255);
   box-shadow: 6px 6px 10px #ffbaed;
-  padding: 8px 16px; /* ボタンの余白を設定する */
-  border-radius: 20px; /* 角丸を設定する */
+  padding: 8px 16px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   margin-bottom: 20px;
@@ -43,7 +45,7 @@
   padding: 5px;
   font-size: 16px;
   background-color: rgb(233, 236, 247);
-  border:none;
+  border: none;
   border-radius: 10px;
   padding: 10px 2px;
   cursor: pointer;
@@ -55,15 +57,15 @@
   padding: 5px;
   font-size: 16px;
   background-color: #dde4ff;
-  border:aquamarine;
+  border: aquamarine;
   border-radius: 10px;
   padding: 10px 2px;
 }
+
 .neumorphism-button {
-  /* ニューモーフィズムボタンのスタイル */
   margin-top: 24px;
   background-color: #f0f3f8;
-  border:none;
+  border: none;
   border-radius: 10px;
   padding: 10px 10px;
   font-size: 16px;
@@ -73,13 +75,14 @@
 }
 
 .neumorphism-button:hover {
-background-color: #c7ffd3;
+  background-color: #c7ffd3;
 }
 
 .neumorphism-button:active {
   background-color: #dcfffd;
-  }
-.form{
+}
+
+.form {
   background-color: rgb(255, 255, 255);
   border: none;
   border-radius: 10px;
@@ -89,68 +92,80 @@ background-color: #c7ffd3;
 }
 
 #output {
-  background-color: #c7ffd3; /* デフォルトのブロック要素として表示する */
+  background-color: #c7ffd3;
   border-radius: 15px;
-  border:none;
-  display:table; /* デフォルトのブロック要素として表示する */
-  resize: none; /* ユーザーによるリサイズを禁止する */
+  border: none;
+  display: table;
+  resize: none;
   overflow: hidden;
   font-size: 16px;
+  transition: 0.2s;
 }
 
 .textarea-transition-enter-active,
 .textarea-transition-leave-active {
-  transition: height 0.5s;
+  transition: 0.2s;
 }
 
 .textarea-transition-enter,
 .textarea-transition-leave-to {
-  height: 0;
-  opacity: 0;
+  height: 0 !important;
 }
 </style>
 
-
 <script>
-
 export default {
   data() {
     return {
       inputText: "",
-      outputText: ""
+      outputText: "",
+      outputHeight: 0,
+      shouldAnimate: false
     };
   },
   methods: {
     processInput() {
+      
       const processedText = this.inputText
-        .split("") // 文字列を一文字ずつの配列に分割
-        .map(char => char + "　") // 全角スペースを追加
-        .join(""); // 配列を文字列に結合
+        .split("")
+        .map(char => char + "　")
+        .join("");
 
       this.outputText = processedText;
-      
+      this.updateOutputHeight();
     },
     calculateRows(text) {
-      const lines = text.split("\n"); // 改行文字で分割
-      const maxLength = Math.max(...lines.map(line => line.length)); // 各行の最大文字数を取得
-      const rows = Math.max(lines.length, 4); // 行数を計算（最低でも4行にする）
+      const lines = text.split("\n");
+      const maxLength = Math.max(...lines.map(line => line.length));
+      const rows = Math.max(lines.length, 4);
 
-      // 最大文字数に応じて行の高さを調整
-      if (maxLength <= 50) {
+      if (maxLength <= 1) {
         return rows;
       } else {
-        return Math.ceil(rows * (maxLength / 50));
+        return Math.ceil(rows * (maxLength / 10));
       }
     },
     updateOutputHeight() {
-      const textarea = this.$refs.outputTextarea;
-      if (textarea) {
-        this.outputHeight = `${textarea.scrollHeight}px`;
-      }
+      this.$nextTick(() => {
+        const textarea = this.$refs.outputTextarea;
+        if (textarea) {
+          textarea.style.height = "auto";
+          textarea.style.height = textarea.scrollHeight + "px";
+          this.outputHeight = textarea.scrollHeight;
+
+          // アニメーションの開始を遅延させるため、shouldAnimateプロパティを設定します
+          this.shouldAnimate = true;
+          setTimeout(() => {
+            this.shouldAnimate = false;
+          }, 5000);
+        }
+      });
     }
   },
-  
-  };
-  name: 'IndexPage'
-  
+  watch: {
+    outputText() {
+      this.updateOutputHeight();
+    }
+  }
+};
 </script>
