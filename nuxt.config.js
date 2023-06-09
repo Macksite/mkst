@@ -73,6 +73,6 @@ export default {
 module.exports = {
   // ...
   css: [
-    "/Users/Macksite/nuxttemp/assets/styles/global.scss"
+    "./assets/styles/global.scss"
   ],
 }
